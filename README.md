@@ -1,2 +1,2 @@
-# apex-retryable-async-tasks
-A robust framework for retryable asynchronous tasks
+# apex-async-retryable-tasks
+A robust framework for retryable asynchronous tasks.
