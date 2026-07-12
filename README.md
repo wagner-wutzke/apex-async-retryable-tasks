@@ -1,5 +1,5 @@
 # apex-async-retryable-tasks
-A robust framework for retryable asynchronous tasks.
+A robust framework for retryable queueable tasks.
 
 ## Robust and resilient integration with async Callouts
 When build building complex integrations unsing async Callouts, how you think about failure, about resilience, about the big picture, system architecture.
