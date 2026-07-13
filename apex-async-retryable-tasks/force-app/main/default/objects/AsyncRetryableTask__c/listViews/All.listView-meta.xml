@@ -2,9 +2,11 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
+    <columns>ApexJobId__c</columns>
     <columns>IdempotencyKey__c</columns>
     <columns>TaskClassName__c</columns>
     <columns>Status__c</columns>
+    <columns>Attempts__c</columns>
     <columns>ExecutionStartDatetime__c</columns>
     <columns>ExecutionEndDatetime__c</columns>
     <columns>SerializedParameters__c</columns>

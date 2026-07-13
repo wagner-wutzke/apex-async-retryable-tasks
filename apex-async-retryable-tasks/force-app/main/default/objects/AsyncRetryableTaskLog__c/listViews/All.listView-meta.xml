@@ -7,6 +7,7 @@
     <columns>Attempt__c</columns>
     <columns>CREATED_DATE</columns>
     <columns>LogMessage__c</columns>
+    <columns>SerializedTaskRecord__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
