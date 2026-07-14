@@ -58,7 +58,7 @@ You don't want to fire the same order request twice and have duplicate orders at
 ### 7. Logging and monitoring
 I mean, log everything, every attempt, every success, every failure.\
 This will help you when it's time to debug.\
-It also serves traceability, reporting requirements and failure alerting for misbehaving integrations.
+It also serves traceability, reporting, analyitics and failure alerting for misbehaving integrations.
 
 ### 8. Plan for total failure
 What happens when the maximum retries count have been reached and the operation behind the task still didn't work?\
