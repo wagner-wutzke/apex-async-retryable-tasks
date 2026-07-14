@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Task Class Name</label>
-    <length>40</length>
+    <length>128</length>
     <required>true</required>
     <type>Text</type>
     <unique>true</unique>

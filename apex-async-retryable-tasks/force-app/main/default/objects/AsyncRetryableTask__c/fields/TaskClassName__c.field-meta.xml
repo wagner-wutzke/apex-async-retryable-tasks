@@ -4,7 +4,7 @@
     <description>The concrete class implementing this task</description>
     <externalId>false</externalId>
     <label>Task Class Name</label>
-    <length>40</length>
+    <length>128</length>
     <required>true</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>

@@ -1,3 +1,2 @@
-public with sharing class AsyncRetryableTaskException extends Exception {
-    //
+public class AsyncRetryableTaskException extends Exception {
 }

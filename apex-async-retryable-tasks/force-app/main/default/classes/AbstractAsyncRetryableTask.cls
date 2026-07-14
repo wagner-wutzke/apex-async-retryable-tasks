@@ -16,17 +16,21 @@ public abstract class AbstractAsyncRetryableTask implements Queueable, Database.
     public AbstractAsyncRetryableTask() {
     }
 
-    public abstract void process();
+    public abstract void process(QueueableContext context);
 
     public abstract String getIdempotencyKey();
 
     /**
      * The execute() method will call the process() method in the concrete class.
      * The concrete class must implement a selective retry mechanism, depending on the error type.
-     * For triggering a retry, it shall call handleFailure().
+     * For triggering a retry, it shall call handleEror().
      */
     public void execute(QueueableContext context) {
-        process();
+        try {
+            process(context);
+        } catch (Exception ex) {
+            handleError(ex);
+        }
     }
 
     /**

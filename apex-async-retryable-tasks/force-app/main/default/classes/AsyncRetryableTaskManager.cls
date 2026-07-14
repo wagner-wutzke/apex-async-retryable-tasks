@@ -2,21 +2,24 @@ public with sharing class AsyncRetryableTaskManager {
     //
     //
 
+    /**
+     *
+     */
     public static AbstractAsyncRetryableTask createTask(
-        AsyncRetryableTaskConfiguration__mdt config,
+        AsyncRetryableTaskConfiguration__mdt taskConfig,
         Map<String, Object> parameters
     ) {
         AbstractAsyncRetryableTask concreteTaskInstance;
 
         // 1. Dinamically instantiate the concrete AbstractAsyncRetryableTask class.
         try {
-            Type t = Type.forName(config.TaskClassName__c);
+            Type t = Type.forName(taskConfig.TaskClassName__c);
             concreteTaskInstance = (AbstractAsyncRetryableTask) t.newInstance();
             concreteTaskInstance.parameters = parameters;
-            concreteTaskInstance.config = config;
+            concreteTaskInstance.config = taskConfig;
         } catch (Exception ex) {
             throw new AsyncRetryableTaskException(
-                'Error creating class instance for' + config.TaskClassName__c + ': ' + ex.getMessage()
+                'Error creating class instance for' + taskConfig.TaskClassName__c + ': ' + ex.getMessage()
             );
         }
 
@@ -33,7 +36,7 @@ public with sharing class AsyncRetryableTaskManager {
         }
 
         //4. Persists a new record for the concrete task
-        AsyncRetryableTask__c taskRecord = createRecord(config, idempotencyKey, concreteTaskInstance);
+        AsyncRetryableTask__c taskRecord = createRecord(taskConfig, idempotencyKey, concreteTaskInstance);
         concreteTaskInstance.taskRecord = taskRecord;
 
         // 5. Log task creation
@@ -42,22 +45,9 @@ public with sharing class AsyncRetryableTaskManager {
     }
 
     /**
-     * Search for the configuration CMDT record.
-     * If no CMDT can be found, abort the process and throws an exception.
-     */
-    public static AsyncRetryableTaskConfiguration__mdt getConfiguration(String developerName) {
-        AsyncRetryableTaskConfiguration__mdt config;
-        try {
-            return AsyncRetryableTaskConfiguration__mdt.getInstance(developerName);
-        } catch (exception ex) {
-            throw new AsyncRetryableTaskException('No task configuration (CMDT) found for ' + developerName);
-        }
-    }
-
-    /**
-     * 1. Increments the number of attempts and updates the record.
-     * 2. Enqueues the task with no delay (0), when it is the first attempt.
-     * 3. Enqueues the task with apex system min. default queueable delay,
+     * 1. Increment the number of attempts and updates the record.
+     * 2. Enqueue the task with no delay (0), when it is the first attempt.
+     * 3. Enqueue the task with apex system min. default queueable delay,
      *    when no delay parameter is given on the method call.
      *    > Setup > Apex Settings > Default minimum apex queueable delay (in seconds)
      */
@@ -89,7 +79,7 @@ public with sharing class AsyncRetryableTaskManager {
     }
 
     /**
-     * Verifies if amount of retries has already reached the limit.
+     * Verify if amount of retries has already reached the limit.
      * - If not: logs the error and enqueues the task again.
      * - Otherwise: logs the final step and finalizes the task.
      *              Task finalization is implemented by the concrete class.
@@ -98,12 +88,24 @@ public with sharing class AsyncRetryableTaskManager {
     public static void handleRetry(AbstractAsyncRetryableTask concreteTaskInstance, String errorMessage) {
         AsyncRetryableTask__c taskRecord = concreteTaskInstance.taskRecord;
 
+        Boolean isRetryableError = ErrorTypeEvaluator.evaluateErrorType(errorMessage);
+        if (!isRetryableError) {
+            concreteTaskInstance.taskRecord.Status__c = AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL;
+            concreteTaskInstance.finalizeTask(AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL);
+            createLog(
+                concreteTaskInstance.taskRecord,
+                AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL,
+                'Task aborted immediately. Non-retryable error encountered:\n' + errorMessage
+            );
+            return;
+        }
+
         if (taskRecord.Attempts__c < taskRecord.MaxRetries__c + 1) {
             String logMsg = 'Execution failed. Scheduling retry... \nReason:\n' + errorMessage;
             createLog(taskRecord, AbstractAsyncRetryableTask.STATUS_ERROR, logMsg);
             enqueueTask(concreteTaskInstance);
         } else {
-            // No retries left
+            // Max retries exhausted
             concreteTaskInstance.finalizeTask(AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL);
             String logMsg = 'Task permanently failed. Max retry threshold reached.\nReason:\n' + errorMessage;
             createLog(taskRecord, AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL, logMsg);
