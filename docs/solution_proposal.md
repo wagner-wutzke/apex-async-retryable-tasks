@@ -51,5 +51,5 @@ The `AsyncRetryableTakManager` uses it right at process begin during retry handl
 This diagram represents the process for the task handling in the proposed framework.
 
 <p align="center">
-  <img width="700" height="300" alt="image" src="./resources/flow_diagram.png" />
+  <img width="900" height="450" alt="image" src="./resources/flow_diagram.png" />
 </p>
