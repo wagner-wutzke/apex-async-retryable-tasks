@@ -1,3 +1,11 @@
+/**
+ * @description
+ *
+ * @group test
+ * @author Wagner O. Wutzke - wagner.wutzke@gmail.com
+ *
+ */
+
 @IsTest
 private class ErrorTypeEvaluatorTest {
     @IsTest

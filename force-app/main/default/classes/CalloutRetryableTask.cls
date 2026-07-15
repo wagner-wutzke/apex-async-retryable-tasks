@@ -1,19 +1,19 @@
+@isTest
 public class CalloutRetryableTask extends AbstractRetryableTask {
     //
 
     public override void process(QueueableContext context) {
-        Integer random = Integer.valueOf(Math.random() * 100);
-
         Http http = new Http();
         HttpRequest request = new HttpRequest();
         request.setMethod('GET');
-
-        String calloutUrl = parameters.get('callout_url').toString();
-
         try {
-            request.setEndpoint(calloutUrl);
+            String credentialName = parameters.get('named_credential').toString();
+            ConnectApi.NamedCredential namedCredential = ConnectApi.NamedCredentials.getNamedCredential(credentialName);
+            request.setEndpoint('callout:' + namedCredential.developerName);
             HttpResponse response = http.send(request);
-            finalizeTask(AbstractRetryableTask.STATUS_FINISHED_SUCCESS);
+            if (response.getStatusCode() != 200) {
+                throw new RetryableTaskException(response.getStatus());
+            }
         } catch (Exception ex) {
             throw new RetryableTaskException(ex.getMessage());
         }

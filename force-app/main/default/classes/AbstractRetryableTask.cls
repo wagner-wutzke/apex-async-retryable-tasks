@@ -1,3 +1,13 @@
+/**
+ * @description The `AbstractRetryableTask` class defines the base functionality for a retryable task,
+ * along with the skeleton methods to be implemented by the extending concrete task classes.
+ * of retryable queueable tasks (tasks extending the `AbstractRetryTask` class)
+ *
+ * @group apex-async-retriable-tasks
+ * @author Wagner O. Wutzke - wagner.wutzke@gmail.com
+ *
+ */
+
 public abstract class AbstractRetryableTask implements Queueable, Database.AllowsCallouts {
     //
     //
@@ -28,6 +38,7 @@ public abstract class AbstractRetryableTask implements Queueable, Database.Allow
     public void execute(QueueableContext context) {
         try {
             process(context);
+            finalizeTask(STATUS_FINISHED_SUCCESS, 'Task finished with status: ' + STATUS_FINISHED_SUCCESS);
         } catch (Exception ex) {
             handleError(ex);
         }
@@ -41,10 +52,10 @@ public abstract class AbstractRetryableTask implements Queueable, Database.Allow
         RetryableTaskManager.handleRetry(this, ex.getMessage());
     }
 
-    public void finalizeTask(String status) {
+    public void finalizeTask(String status, String message) {
         taskRecord.Status__c = status;
         taskRecord.ExecutionEndDatetime__c = Datetime.now();
         update taskRecord;
-        RetryableTaskManager.createLog(taskRecord, status, 'Task finished with status: ' + status);
+        RetryableTaskManager.createLog(taskRecord, status, message);
     }
 }

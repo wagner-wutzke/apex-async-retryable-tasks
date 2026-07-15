@@ -12,7 +12,7 @@
         <members>RetryableTaskManager</members>
         <members>RetryableTaskException</members>
         <members>ErrorTypeEvaluator</members>
-        <members>RetryableTaskMock</members>
+        <members>MockRetryableTask</members>
         <members>CalloutRetryableTask</members>
         <name>ApexClass</name>
     </types>
@@ -20,6 +20,23 @@
     <types>
         <members>RetryableTaskConfiguration__mdt</members>
         <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>HTTPSTATUS_Service_OK_200</members>
+        <members>HTTPSTATUS_Gateway_Timeout_400</members> 
+        <members>HTTPSTATUS_Service_Unavailable_500</members> 
+        <name>NamedCredential</name>
+    </types>
+
+    <types>
+        <members>CalloutRetryTasks</members>
+        <name>PermissionSet</name>
+    </types>
+    
+    <types>
+        <members>No_Authentication_Credentials</members> 
+        <name>ExternalCredential</name>
     </types>
     
     <version>67.0</version>

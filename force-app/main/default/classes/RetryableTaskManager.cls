@@ -1,15 +1,29 @@
+/**
+ * @description The `RetryableTaskManager` class implements the core functionality for the management
+ * of retryable `Queueable` tasks (tasks extending the `AbstractRetryTask` class)
+ *
+ * @group apex-async-retriable-tasks
+ * @author Wagner O. Wutzke - wagner.wutzke@gmail.com
+ *
+ */
 public with sharing class RetryableTaskManager {
-    //
     //
 
     /**
-     * 1. Create and returns a task instance of the configured value in
-     * 'RetryableTaskConfiguration__mdt.TaskClassName__c' field.
-     * 2. If the class cannot be found, a RetryableTaskException exception will be thrown.
-     * 3. If the calculated idempotency key is already existent in any persisted record,
-     *    a RetryableTaskException exception will be thrown.
-     * 4. Persist a new RetryableTask__c record for holding the task status.
+     * @description
+     * 1. Create and returns a task instance of the configured value in 'taskConfig.TaskClassName__c' field.<br>
+     * 2. If the class cannot be found, a RetryableTaskException exception will be thrown.<br>
+     * 3. If the calculated idempotency key is already existent in any executing record,
+     * a `RetryableTaskException` exception will be thrown. <br>
+     * 4. Persist a new `RetryableTask__c` record for holding the task status.<br>
      * 5. Log the task creation.
+     *
+     * @param taskConfig - record with task configurations.
+     * @param parameters - for holding parameters to be using during task execution.
+     *
+     * @return a concrete instance of `AbstractRetryableTask` narrowed to the the class given in 'taskConfig'
+     *
+     * @throws `RetryableTaskException`
      */
     public static AbstractRetryableTask createTask(
         RetryableTaskConfiguration__mdt taskConfig,
@@ -51,11 +65,12 @@ public with sharing class RetryableTaskManager {
     }
 
     /**
-     * 1. Increment the number of attempts and updates the record.
-     * 2. Enqueue the task with no delay (0), when it is the first attempt.
+     * @description * 1. Increment the number of attempts and updates the record.<br>
+     * 2. Enqueue the task with no delay (0), when it is the first attempt.<br>
      * 3. Enqueue the task with apex system min. default queueable delay,
-     *    when no delay parameter is given on the method call.
-     *    > Setup > Apex Settings > Default minimum apex queueable delay (in seconds)
+     *    when no delay parameter is given on the method call.<br>
+     *    Check: > Setup > Apex Settings > Default minimum apex queueable delay (in seconds)
+     * @param concreteTaskInstance
      */
     public static void enqueueTask(AbstractRetryableTask concreteTaskInstance) {
         if (concreteTaskInstance.taskRecord.Attempts__c == 0) {
@@ -85,11 +100,12 @@ public with sharing class RetryableTaskManager {
     }
 
     /**
-     * Verify if amount of retries has already reached the limit.
-     * - If not: logs the error and enqueues the task again.
-     * - Otherwise: logs the final step and finalizes the task.
+     * @description Verify if amount of retries has already reached the limit.<br>
+     * - If not: logs the error and enqueues the task again.<br>
+     * - Otherwise: logs the final step and finalizes the task.<br>
      *              Task finalization is implemented by the concrete class.
-     *
+     * @param concreteTaskInstance
+     * @param errorMessage
      */
     public static void handleRetry(AbstractRetryableTask concreteTaskInstance, String errorMessage) {
         RetryableTask__c taskRecord = concreteTaskInstance.taskRecord;
@@ -97,31 +113,29 @@ public with sharing class RetryableTaskManager {
         Boolean isRetryableError = ErrorTypeEvaluator.evaluateErrorType(errorMessage);
         if (!isRetryableError) {
             concreteTaskInstance.taskRecord.Status__c = AbstractRetryableTask.STATUS_FINISHED_FAIL;
-            concreteTaskInstance.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_FAIL);
-            createLog(
-                concreteTaskInstance.taskRecord,
-                AbstractRetryableTask.STATUS_FINISHED_FAIL,
-                'Task aborted immediately. Non-retryable error encountered:\n' + errorMessage
-            );
+            String LogMsg = 'Task aborted. Non-retryable error encountered:\n' + errorMessage;
+            concreteTaskInstance.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_FAIL, logMsg);
             return;
         }
 
         if (taskRecord.Attempts__c < taskRecord.MaxRetries__c + 1) {
-            String logMsg = 'Execution failed. Scheduling retry... \nReason:\n' + errorMessage;
+            String logMsg = 'Execution failed. Enqueueing retry... \nReason:\n' + errorMessage;
             createLog(taskRecord, AbstractRetryableTask.STATUS_ERROR, logMsg);
             enqueueTask(concreteTaskInstance);
         } else {
             // Max retries exhausted
-            concreteTaskInstance.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_FAIL);
             String logMsg = 'Task permanently failed. Max retry threshold reached.\nReason:\n' + errorMessage;
-            createLog(taskRecord, AbstractRetryableTask.STATUS_FINISHED_FAIL, logMsg);
+            concreteTaskInstance.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_FAIL, logMsg);
         }
     }
 
     /**
-     * Create a log record and a debug output.
-     * The logging procedure could also be plsced in the concerete task.
+     * @description * Create a log record and a debug output.<br>
+     * The logging procedure could also be plsced in the concerete task.<br>
      * Following KISS principle, we do it here.
+     * @param taskRecord
+     * @param status
+     * @param message
      */
     public static void createLog(RetryableTask__c taskRecord, String status, String message) {
         RetryableTaskLog__c log = new RetryableTaskLog__c();
@@ -135,7 +149,9 @@ public with sharing class RetryableTaskManager {
     }
 
     /**
-     * Check if the idempotency key is present among the executing records.
+     * @description Check if the idempotency key is present among the executing records.
+     * @param idempotencyKey
+     * @return  `Boolean`
      */
     @TestVisible
     private static Boolean idempotencyKeyExists(String idempotencyKey) {
@@ -152,6 +168,13 @@ public with sharing class RetryableTaskManager {
         return !existingTasks.isEmpty();
     }
 
+    /**
+     *
+     * @param config
+     * @param idempotencyKey
+     * @param concreteTaskInstance
+     * @return  `RetryableTask__c`
+     */
     @TestVisible
     private static RetryableTask__c createRecord(
         RetryableTaskConfiguration__mdt config,

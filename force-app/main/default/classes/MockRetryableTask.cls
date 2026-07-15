@@ -1,3 +1,11 @@
+/**
+ * @description This class is used for testing purposes in the the `TaskManagerTest` class.
+ *
+ * @group test
+ * @author Wagner O. Wutzke - wagner.wutzke@gmail.com
+ *
+ */
+
 @isTest
 public class MockRetryableTask extends AbstractRetryableTask {
     //

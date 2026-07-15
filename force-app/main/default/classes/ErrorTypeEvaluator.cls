@@ -1,3 +1,11 @@
+/**
+ * @description The `ErrorTypeEvaluator` class implements the functionality of evaluating
+ * whether a error message for a task exception indicates a recoverable error or not.
+ *
+ * @group apex-async-retriable-tasks
+ * @author Wagner O. Wutzke - wagner.wutzke@gmail.com
+ *
+ */
 public class ErrorTypeEvaluator {
     //
 
