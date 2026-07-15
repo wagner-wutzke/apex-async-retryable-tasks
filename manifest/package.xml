@@ -2,21 +2,23 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 
     <types>
-        <members>AsyncRetryableTask__c</members>
-        <members>AsyncRetryableTaskLog__c</members>
+        <members>RetryableTask__c</members>
+        <members>RetryableTaskLog__c</members>
         <name>CustomObject</name>
     </types>
 
     <types>
-        <members>AbstractAsyncRetryableTask</members>
-        <members>AsyncRetryableTaskManager</members>
-        <members>AsyncRetryableTaskException</members>
-        <members>ExampleAsyncRetryableTask</members>
+        <members>AbstractRetryableTask</members>
+        <members>RetryableTaskManager</members>
+        <members>RetryableTaskException</members>
+        <members>ErrorTypeEvaluator</members>
+        <members>RetryableTaskMock</members>
+        <members>CalloutRetryableTask</members>
         <name>ApexClass</name>
     </types>
 
     <types>
-        <members>AsyncRetryableTaskConfiguration__mdt</members>
+        <members>RetryableTaskConfiguration__mdt</members>
         <name>CustomObject</name>
     </types>
     

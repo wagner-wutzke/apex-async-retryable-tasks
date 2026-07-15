@@ -1,5 +1,5 @@
 @isTest
-public class AsyncRetryableTaskMock extends AbstractAsyncRetryableTask {
+public class MockRetryableTask extends AbstractRetryableTask {
     //
     //
     public Boolean processCalled = false;
@@ -11,7 +11,7 @@ public class AsyncRetryableTaskMock extends AbstractAsyncRetryableTask {
 
         // Simulating a scenario where a developer throws an error to test the catch handler
         if (this.parameters != null && this.parameters.containsKey('throwError')) {
-            throw new AsyncRetryableTaskException('Simulated processing failure');
+            throw new RetryableTaskException('Simulated processing failure');
         }
     }
 

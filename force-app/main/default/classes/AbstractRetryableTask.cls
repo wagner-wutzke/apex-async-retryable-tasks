@@ -1,4 +1,4 @@
-public abstract class AbstractAsyncRetryableTask implements Queueable, Database.AllowsCallouts {
+public abstract class AbstractRetryableTask implements Queueable, Database.AllowsCallouts {
     //
     //
     public static final String STATUS_EXECUTING = 'Executing';
@@ -10,10 +10,10 @@ public abstract class AbstractAsyncRetryableTask implements Queueable, Database.
 
     public Map<String, Object> parameters { get; set; }
     public String configDeveloperName { get; set; }
-    public AsyncRetryableTask__c taskRecord { get; set; }
-    public AsyncRetryableTaskConfiguration__mdt config { get; set; }
+    public RetryableTask__c taskRecord { get; set; }
+    public RetryableTaskConfiguration__mdt config { get; set; }
 
-    public AbstractAsyncRetryableTask() {
+    public AbstractRetryableTask() {
     }
 
     public abstract void process(QueueableContext context);
@@ -38,13 +38,13 @@ public abstract class AbstractAsyncRetryableTask implements Queueable, Database.
      * Check first if a retry really makes sense
      */
     public void handleError(Exception ex) {
-        AsyncRetryableTaskManager.handleRetry(this, ex.getMessage());
+        RetryableTaskManager.handleRetry(this, ex.getMessage());
     }
 
     public void finalizeTask(String status) {
         taskRecord.Status__c = status;
         taskRecord.ExecutionEndDatetime__c = Datetime.now();
         update taskRecord;
-        AsyncRetryableTaskManager.createLog(taskRecord, status, 'Task finished with status: ' + status);
+        RetryableTaskManager.createLog(taskRecord, status, 'Task finished with status: ' + status);
     }
 }

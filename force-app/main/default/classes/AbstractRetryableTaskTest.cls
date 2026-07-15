@@ -1,5 +1,5 @@
 @isTest
-private class AbstractAsyncRetryableTaskTest {
+private class AbstractRetryableTaskTest {
     //
     final static String CONFIG_NAME = 'Mock_Task_Configuration';
     final static String TASK_CLASS_NAME = 'MockRetryableTask';
@@ -7,7 +7,7 @@ private class AbstractAsyncRetryableTaskTest {
     @isTest
     static void testExecuteCallsProcess() {
         // Arrange
-        AsyncRetryableTaskMock mockTask = new AsyncRetryableTaskMock();
+        MockRetryableTask mockTask = new MockRetryableTask();
         mockTask.parameters = new Map<String, Object>{ 'testParam' => 'value' };
 
         // Act
@@ -27,9 +27,9 @@ private class AbstractAsyncRetryableTaskTest {
     @isTest
     static void testHandleErrorDelegatesToManager() {
         // Arrange
-        AsyncRetryableTaskMock mockTask = new AsyncRetryableTaskMock();
-        AsyncRetryableTask__c taskRecord = new AsyncRetryableTask__c(
-            Status__c = AbstractAsyncRetryableTask.STATUS_CREATED,
+        MockRetryableTask mockTask = new MockRetryableTask();
+        RetryableTask__c taskRecord = new RetryableTask__c(
+            Status__c = AbstractRetryableTask.STATUS_CREATED,
             IdempotencyKey__c = 'LockedKey123',
             TaskClassName__c = TASK_CLASS_NAME,
             TaskConfigDeveloperName__c = CONFIG_NAME,
@@ -62,8 +62,8 @@ private class AbstractAsyncRetryableTaskTest {
     static void testFinalizeTaskUpdatesRecordAndLogs() {
         // Arrange
         // 1. Prepare base parent task record required by the abstract architecture
-        AsyncRetryableTask__c testRecord = new AsyncRetryableTask__c(
-            Status__c = AbstractAsyncRetryableTask.STATUS_CREATED,
+        RetryableTask__c testRecord = new RetryableTask__c(
+            Status__c = AbstractRetryableTask.STATUS_CREATED,
             IdempotencyKey__c = 'LockedKey123',
             TaskClassName__c = TASK_CLASS_NAME,
             TaskConfigDeveloperName__c = CONFIG_NAME,
@@ -72,24 +72,24 @@ private class AbstractAsyncRetryableTaskTest {
         );
         insert testRecord;
 
-        AsyncRetryableTaskMock mockTask = new AsyncRetryableTaskMock();
+        MockRetryableTask mockTask = new MockRetryableTask();
         mockTask.taskRecord = testRecord;
 
         // Act
         Test.startTest();
-        mockTask.finalizeTask(AbstractAsyncRetryableTask.STATUS_FINISHED_SUCCESS);
+        mockTask.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_SUCCESS);
         Test.stopTest();
 
         // Assert
         // Verify the parent record was updated correctly
-        AsyncRetryableTask__c updatedRecord = [
+        RetryableTask__c updatedRecord = [
             SELECT Status__c, ExecutionEndDatetime__c
-            FROM AsyncRetryableTask__c
+            FROM RetryableTask__c
             WHERE Id = :testRecord.Id
         ];
 
         System.assertEquals(
-            AbstractAsyncRetryableTask.STATUS_FINISHED_SUCCESS,
+            AbstractRetryableTask.STATUS_FINISHED_SUCCESS,
             updatedRecord.Status__c,
             'The task status must reflect the finalized state passed into the method.'
         );
@@ -99,22 +99,22 @@ private class AbstractAsyncRetryableTaskTest {
             'Execution end timestamp must be set to the current system clock upon finalization.'
         );
 
-        // Note: Assuming AsyncRetryableTaskManager.createLog creates a log record under the hood,
-        // you would add an SOSL/SOQL assertion here targeting your logging table (e.g., AsyncRetryableTaskLog__c)
+        // Note: Assuming RetryableTaskManager.createLog creates a log record under the hood,
+        // you would add an SOSL/SOQL assertion here targeting your logging table (e.g., RetryableTaskLog__c)
         // to verify that the string 'Task finished with status: Finished with Success' was persisted.
     }
 
     @isTest
     static void testPropertyAccessorsAndConstants() {
         // Act & Assert (Verifying properties are public and constants are correctly defined)
-        System.assertEquals('Executing', AbstractAsyncRetryableTask.STATUS_EXECUTING);
-        System.assertEquals('Created', AbstractAsyncRetryableTask.STATUS_CREATED);
-        System.assertEquals('Finished with Fail', AbstractAsyncRetryableTask.STATUS_FINISHED_FAIL);
-        System.assertEquals('Finished with Success', AbstractAsyncRetryableTask.STATUS_FINISHED_SUCCESS);
-        System.assertEquals('Retry', AbstractAsyncRetryableTask.STATUS_RETRY);
-        System.assertEquals('Error', AbstractAsyncRetryableTask.STATUS_ERROR);
+        System.assertEquals('Executing', AbstractRetryableTask.STATUS_EXECUTING);
+        System.assertEquals('Created', AbstractRetryableTask.STATUS_CREATED);
+        System.assertEquals('Finished with Fail', AbstractRetryableTask.STATUS_FINISHED_FAIL);
+        System.assertEquals('Finished with Success', AbstractRetryableTask.STATUS_FINISHED_SUCCESS);
+        System.assertEquals('Retry', AbstractRetryableTask.STATUS_RETRY);
+        System.assertEquals('Error', AbstractRetryableTask.STATUS_ERROR);
 
-        AsyncRetryableTaskMock mockTask = new AsyncRetryableTaskMock();
+        MockRetryableTask mockTask = new MockRetryableTask();
         mockTask.configDeveloperName = 'My_Metadata_Config';
 
         System.assertEquals(

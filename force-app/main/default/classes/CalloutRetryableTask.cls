@@ -1,4 +1,4 @@
-public class CalloutAsyncRetryableTask extends AbstractAsyncRetryableTask {
+public class CalloutRetryableTask extends AbstractRetryableTask {
     //
 
     public override void process(QueueableContext context) {
@@ -13,9 +13,9 @@ public class CalloutAsyncRetryableTask extends AbstractAsyncRetryableTask {
         try {
             request.setEndpoint(calloutUrl);
             HttpResponse response = http.send(request);
-            finalizeTask(AbstractAsyncRetryableTask.STATUS_FINISHED_SUCCESS);
+            finalizeTask(AbstractRetryableTask.STATUS_FINISHED_SUCCESS);
         } catch (Exception ex) {
-            throw new AsyncRetryableTaskException(ex.getMessage());
+            throw new RetryableTaskException(ex.getMessage());
         }
     }
 
