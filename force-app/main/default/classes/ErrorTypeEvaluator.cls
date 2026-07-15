@@ -13,6 +13,10 @@ public class ErrorTypeEvaluator {
         'internal server error|service unavailable|gateway timeout)'
     );
 
+    /**
+     * Returns true if the error message pictures a case where a
+     * retry could be applied.
+     */
     public static Boolean evaluateErrorType(String errorMessage) {
         if (String.isBlank(errorMessage)) {
             return false;

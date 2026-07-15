@@ -3,7 +3,13 @@ public with sharing class AsyncRetryableTaskManager {
     //
 
     /**
-     *
+     * 1. Create and returns a task instance of the configured value in
+     * 'AsyncRetryableTaskConfiguration__mdt.TaskClassName__c' field.
+     * 2. If the class cannot be found, a AsyncRetryableTaskException exception will be thrown.
+     * 3. If the calculated idempotency key is already existent in any persisted record,
+     *    a AsyncRetryableTaskException exception will be thrown.
+     * 4. Persist a new AsyncRetryableTask__c record for holding the task status.
+     * 5. Log the task creation.
      */
     public static AbstractAsyncRetryableTask createTask(
         AsyncRetryableTaskConfiguration__mdt taskConfig,
