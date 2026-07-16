@@ -40,16 +40,23 @@ In order to simplify, here is what I am expecting from the framework:
 
 After some thinking, and keeping focus on simplicity and flexibility, I came to the following class model.
 <p align="center">
-  <img width="700" height="300" alt="image" src="./resources/class_model.png" />
+  <img width="700" height="700" alt="image" src="./resources/class_diagram.png" />
 </p>
 
 We are having an additional component in the picture now - the `ErrorTypeEvaluator`. It is responsible to evaluate if the provided error message on failure pictures a case where a retry is suitable or not.\
 The `AsyncRetryableTakManager` uses it right at process begin during retry handling.
+<br><br>
 
-## Flow Diagram
+## Handling a Task - The Flow
 
-This diagram represents the process for the task handling in the proposed framework.
-
+So what happens when I create a new Callout Task implementation class and use the framework for handling it?
+In order to make it visually comprehensive, I drawed the following flow diagram.
 <p align="center">
-  <img width="900" height="450" alt="image" src="./resources/flow_diagram.png" />
+  <img width="800" height="400" alt="image" src="./resources/flow_diagram.png" />
 </p>
+
+Please, keep in mind that this Flow is stateful.<br>
+In order to step into the next steps, it depends on external events: System Queueables handling and external responses.<br>
+Therefore, before one can think of having a real Salesforce Flow, I can already say _"Salesforce Flows are inherently stateless"_.
+It would be much more work to implement a **Flow Orchestration** with Flows for this use case.<br>
+So I decided to keep this work in the `RetryableTaskManager` Apex class.

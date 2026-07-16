@@ -26,14 +26,24 @@ public abstract class AbstractRetryableTask implements Queueable, Database.Allow
     public AbstractRetryableTask() {
     }
 
+    /**
+     * @description implements the real logic to be executed when running the queueable job.
+     * @param context the queuable context
+     * @return  `abstract void`
+     */
     public abstract void process(QueueableContext context);
 
+    /**
+     * @description The concrete class implementes how to calculate an unique idempotency key and returns it.
+     * @return the calculated idempotency key
+     */
     public abstract String getIdempotencyKey();
 
     /**
-     * The execute() method will call the process() method in the concrete class.
-     * The concrete class must implement a selective retry mechanism, depending on the error type.
+     * The execute() method will call the process() method in the concrete class.<br>
+     * The concrete class must implement a selective retry mechanism, depending on the error type.<br>
      * For triggering a retry, it shall call handleEror().
+     * @param context the queuable context
      */
     public void execute(QueueableContext context) {
         try {
@@ -45,13 +55,18 @@ public abstract class AbstractRetryableTask implements Queueable, Database.Allow
     }
 
     /**
-     * Delegates the error to the Task Manager for handling the failure
-     * Check first if a retry really makes sense
+     * @description Delegates the error to the Task Manager for handling the failure.
+     * @param ex the exception to be evaluated.
      */
     public void handleError(Exception ex) {
         RetryableTaskManager.handleRetry(this, ex.getMessage());
     }
 
+    /**
+     * @description
+     * @param status final status to be set.
+     * @param message the message for logging when finishing.
+     */
     public void finalizeTask(String status, String message) {
         taskRecord.Status__c = status;
         taskRecord.ExecutionEndDatetime__c = Datetime.now();

@@ -22,8 +22,9 @@ public class ErrorTypeEvaluator {
     );
 
     /**
-     * Returns true if the error message pictures a case where a
-     * retry could be applied.
+     * @description Returns true if the error message represents a case where a retry could be applied.
+     * @param errorMessage
+     * @return  `Boolean`
      */
     public static Boolean evaluateErrorType(String errorMessage) {
         if (String.isBlank(errorMessage)) {
