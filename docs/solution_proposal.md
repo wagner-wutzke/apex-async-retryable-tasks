@@ -57,6 +57,11 @@ In order to make it visually comprehensive, I drawed the following flow diagram.
 
 Please, keep in mind that this Flow is stateful.<br>
 In order to step into the next steps, it depends on external events: System Queueables handling and external responses.<br>
-Therefore, before one can think of having a real Salesforce Flow, I can already say _"Salesforce Flows are inherently stateless"_.
+Therefore, before one can think of having a real Salesforce Flow for a solution, I can already say
+
+> _Salesforce Flows are inherently stateless_.<br>
+
 It would be much more work to implement a **Flow Orchestration** with Flows for this use case.<br>
-So I decided to keep this work in the `RetryableTaskManager` Apex class.
+So I decided to keep this work in the `RetryableTaskManager` Apex class.<br>
+
+[BACK](../README.md)

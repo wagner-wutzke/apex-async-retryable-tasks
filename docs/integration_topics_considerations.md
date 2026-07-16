@@ -55,5 +55,6 @@ Do you email an admin, update a record? You absolutely have to have a plan for t
 ## Good for now
 
 So, that's to the ideas.\
-Now that we have some key aspects for consideration when build our framework, let's try to implement them in a flexible, configurable and extensible fashion, so that it can easily be applied in real world scenarios.
-<p>&nbsp;</p>
+Now that we have some key aspects for consideration when build our framework, let's try to implement them in a flexible, configurable and extensible fashion, so that it can easily be applied in real world scenarios.<br>
+
+[BACK](../README.md)

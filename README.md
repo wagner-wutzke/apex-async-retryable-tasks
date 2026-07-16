@@ -28,4 +28,8 @@ You can follow the documentation under the following links:
 
 - ## [Solution Proposal](./docs/solution_proposal.md)
 
+- ## [Using the Framework Proposal](./docs/using_the_framework.md)
+
+- ## [Apex Documentation](./apex-documentation/)
+
 <p>&nbsp;</p>
