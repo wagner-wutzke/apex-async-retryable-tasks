@@ -1,4 +1,4 @@
-# Integration topics considerations
+# Retry considerations
 
 ### 1. Is a retry really helpful?
 
@@ -6,7 +6,7 @@ All right. Now, for the main event, **you've got to know when to even bother ret
 wheels, wasting time and resources trying to fix something that is permanently broken. And this table here just lays it all out perfectly.
 
 <p align="center">
-<img width="500" height="250" alt="Retry Table" src="./resources/retry_table.png" />
+  <img width="500" height="250" alt="Retry Table" src="./resources/retry_table.png" />
 </p>
 
 Look, we only want to retry transient issues. You know, temporary glitches, network hiccups, a 503 service unavailable. That's a perfect example.
