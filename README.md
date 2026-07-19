@@ -24,12 +24,14 @@ At the end we all can learn something.
 
 You can follow the documentation under the following links:
 
-- ## [Integration Topics Considerations](./docs/integration_topics_considerations.md)
+- ## [Retry Considerations](./docs/integration_topics_considerations.md)
 
 - ## [Solution Proposal](./docs/solution_proposal.md)
 
-- ## [Using the Framework Proposal](./docs/using_the_framework.md)
+- ## [Using the Framework](./docs/using_the_framework.md)
 
-- ## [Apex Documentation](./apex-documentation/)
+- ## [Drawbacks, enhancements, final words](./docs/final.md)
+
+- ## [Apex Documentation](./apex-documentation/index.html)
 
 <p>&nbsp;</p>

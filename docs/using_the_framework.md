@@ -84,17 +84,6 @@ After doing some tests (see scripts/apex/anonymous-test-framework.apex in Git Re
 <p align="center">
   <img width="900" height="200" alt="image" src="./resources/task-logs.png" />Retryable Task Log records
 </p>
-<p>&nbsp;</p>
-
-## Drawbacks, enhancements, notes
-
-... to be done
-<p>&nbsp;</p>
-
-## Final Words
-
-The source code, unit tests, ApexDox docs, anonymous Apex script and example classes are in my projects [repository](https://github.com/wagner-wutzke/apex-async-retryable-tasks) on GitHub.<br>
-Feel free to have a look and comment.
 
 <br>
 
