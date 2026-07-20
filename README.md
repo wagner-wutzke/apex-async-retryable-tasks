@@ -22,16 +22,16 @@ At first, It doesn’t really matter which platform or language it is being used
 After those considerations, I am going to present a first technical solution **experiment** for the Salesforce platform. It is an experiment, so feel free to make your comments.\
 At the end we all can learn something.
 
-You can follow the documentation under the following links:
+You can follow the documentation under the these links:
 
-- ## [Retry Considerations](./docs/integration_topics_considerations.md)
+- ### [Retry Considerations](./docs/retry_considerations.md)
 
-- ## [Solution Proposal](./docs/solution_proposal.md)
+- ### [Solution Proposal](./docs/solution_proposal.md)
 
-- ## [Using the Framework](./docs/using_the_framework.md)
+- ### [Using the Framework](./docs/using_the_framework.md)
 
-- ## [Drawbacks, enhancements, final words](./docs/final.md)
+- ### [Apex Documentation](./apex-documentation/index.html)
 
-- ## [Apex Documentation](./apex-documentation/index.html)
+- ### [Drawbacks, enhancements, final words](./docs/final.md)
 
 <p>&nbsp;</p>
