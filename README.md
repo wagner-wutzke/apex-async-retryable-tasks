@@ -1,10 +1,10 @@
 # apex-async-retryable-tasks
 
-> _A robust and resilient integration experiment for async Callouts._
+> _A resilient integration experiment for async Tasks._
 
 <p>&nbsp;</p>
 
-When build building complex integrations unsing async Callouts, how you think about failure, about resilience, about the big picture, system architecture.
+When build building complex integrations unsing async Callouts or Batchables, how you think about failure, about resilience, about the big picture, system architecture.
 Resilient describes something or someone that can easily recover, bounce back, or adjust to misfortune, change, or damage.
 So, what do you say? Yeah, this question, it's a classic for a reason. It's not really about the code itself.
 It's about building systems that don't just, you know, fall over at the first sign of trouble.

@@ -112,15 +112,30 @@ public abstract class AbstractRetryableTask ... {
 
 <br>
 
-## System Queue Overload
+## System Queue & Governor Limits
 
-...
-<br><br>
+Yes, I forgot one very important point when implementing this framework.
+I do not check if the Salesforce System Job Queue is getting overloaded when adding new jobs to it. **This is a huge drawback 🤦‍♂️.**\
+But this is very easy to fix.\
+One question though, still remains: _what do we do with the tasks that cannot be enqueued due to system queue overload?_\
+My first intuition would be to redirect those tasks to a Dead-Letter Queue and log it properly.
+Additionally, perhaps would be thoughtful to not use the whole System Queue Governor Queue Size Limit (50) for this framework alone, but take perhaps 80% only.
 
-## Exponential Backoff Delay in Salesforce
+This is what needs to be added to the `RetryableTaskManager.enqueueTask()` method.
 
-...
-<br><br>
+```java
+Integer limit = Integer.valueOf(Limits.getLimitQueueableJobs() * 0.8);
+Integer availableJobs = limit - Limits.getQueueableJobs();
+if (availableJobs > 0) {
+    System.enqueueJob(new MyQueueableJob());
+}
+else {
+    // Dead-Letter Queue if System Queue limit reached?
+    RetryableTaskManager.toDeadLetterQueue(concreteTaskInstance);
+}
+```
+
+<br>
 
 ## Dead Letter Queue
 
@@ -135,15 +150,53 @@ public abstract class AbstractRetryableTask ... {
 [ Log to DLQ ] <─────────────────────────────┘
 ```
 
-...
-<br><br>
+The main idea of a Dead-Letter Queue in this context is to have a place to store undeliverable or failed asynchronous tasks.\ This can happen when:
+
+- The Queue size limit has been reached.
+- The amount of max retries has been reached.
+
+Since Salesforce does not provide an out-of-the-box DLQ for Apex or standard Platform Events, developers typically implement a custom DLQ mechanism to prevent data loss.
+
+In order to use the DLQ, the `RetryableTaskManager.handleRetry()` method must be adjusted.
+
+```java
+} else {
+    // Max retries exhausted
+    String logMsg = 'Task permanently failed. Max retry threshold reached.\nReason:\n' + errorMessage;
+    Failed_Task__c failedTask = new Failed_Task__c();
+    // set the record fields accordingly
+    insert failedTask;
+    concreteTaskInstance.finalizeTask(AbstractRetryableTask.STATUS_FINISHED_FAIL, logMsg);
+}
+```
+
+After saving the Dead-Letter record, maybe sending a notification to an administrator over Slack, Teams or something similar could make sense.
+<br>
+
+## Exponential Backoff Delay
+
+The current implementation does not use an Exponential Backoff Delay.
+This is because I was willing to work with delays in the range of seconds.
+Salesforce System.enqueue(task, min) method works unfortuantely with minutes.\
+So I changed the default Minimum Apex Queueable Delay setting to 30 secs and work with that same delay on each retry.\
+
+> Setup > Apex Settings > Default minimum apex queueable delay
+
+Of course, I could use a Scheduler for scheduling the task retry enqueueing.\
+But this would be out of this experiment's scope.
+<br>
 
 ## Final Words
 
-...
+This was the last article on this series of three.\
+It is astonishing how one little topic can bring so much to the table.
 
-The source code, unit tests, ApexDox docs, anonymous Apex script and example classes are in my projects [repository](https://github.com/wagner-wutzke/apex-async-retryable-tasks) on GitHub.<br>
-Feel free to have a look and comment.
-<br><br>
+I hope, the ideas brought here can be helpful.
+Feel free to have a look in the source code and comment.
+The articles are also in my [Wordpress blog](https://wagnerwutzke.wordpress.com/).
+
+The source code, ApexDox docs, anonymous Apex script and example classes are in my projects [repository](https://github.com/wagner-wutzke/apex-async-retryable-tasks) on GitHub.<br>
+
+<br>
 
 [<< BACK](../README.md)
