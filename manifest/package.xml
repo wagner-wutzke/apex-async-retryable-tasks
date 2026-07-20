@@ -23,9 +23,9 @@
     </types>
 
     <types>
-        <members>HTTPSTATUS_Service_OK_200</members>
-        <members>HTTPSTATUS_Gateway_Timeout_400</members> 
-        <members>HTTPSTATUS_Service_Unavailable_500</members> 
+        <members>STATUS_200_OK</members>
+        <members>STATUS_403_Unrecoverable</members> 
+        <members>STATUS_503_Recoverable</members> 
         <name>NamedCredential</name>
     </types>
 

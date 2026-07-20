@@ -49,9 +49,10 @@ That means implementing key = f (action, user, data) so that the key represents 
 
 **2.** After creating the concrete class. The respective Custom Metadata Type record must be configured.
 
-<p align="center">
-  <img width="600" height="400" alt="image" src="./resources/cmdt.png" />
-</p>
+<div align="center">
+  <img width="600" alt="image" src="./resources/cmdt.png" />
+  <p><i>RetryableTaskConfiguration__mdt record for the Callout task</i></p>
+</div>
 
 **3.** Finally, the task must be instantiated and enqueued for execution in your integration code. This is how it is done.
 
@@ -78,13 +79,15 @@ So this is all to be done.<br>
 
 After doing some tests (see scripts/apex/anonymous-test-framework.apex in Git Repository), with endpoints returning 200, 403 and 503 responses, I could see the results as expected.
 
-<p align="center">
-  <img width="900" height="200" alt="image" src="./resources/tasks-status.png" />Retryable Task records
-</p>
-<p align="center">
-  <img width="900" height="200" alt="image" src="./resources/task-logs.png" />Retryable Task Log records
-</p>
+<div align="center">
+  <img width="1000" alt="image" src="./resources/tasks-status.png" />
+  <p><i>Retryable Task records</i></p>
+</div>
+<div align="center">
+  <img width="1000" alt="image" src="./resources/task-logs.png" />
+  <p><i>Retryable Task Log records</i></p>
+</div>
 
 <br>
 
-[BACK](../README.md)
+[<< BACK](../README.md)

@@ -26,10 +26,6 @@
     </classAccesses>
     <customMetadataTypeAccesses>
         <enabled>true</enabled>
-        <name>AsyncRetryableTaskConfiguration__mdt</name>
-    </customMetadataTypeAccesses>
-    <customMetadataTypeAccesses>
-        <enabled>true</enabled>
         <name>RetryableTaskConfiguration__mdt</name>
     </customMetadataTypeAccesses>
     <externalCredentialPrincipalAccesses>
